@@ -1,15 +1,40 @@
-
 const express = require('express')
-const phone = require('phone');
+const url = require('url')
+const { phone } = require('phone');
 
 const PORT = "5000"
 const app = express()
 
-app.get("/", (req, res)=>{
-
-    res.status(200).send("<html><body><h1>HOME!!!!</h1></body></html>")
-
+app.get("/", (req, res) => {
+    res.status(200).send("<html><body><h1> HOME!!!! </h1></body></html>");
 })
+
+app.get("/info", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).send(JSON.stringify({name: "gerardo", apelido: "garcia"}));
+})
+
+app.get("/detail", (req, res) => {
+    res.setHeader("Content-Type", "text/html");
+    res.status(200).send("DETALLES");
+})
+
+app.get("/phone", (req, res) => {
+    try {     
+        const { value, country} = req.query
+        console.log(value, country);
+        const result = phone(value, country.toUpperCase());
+        res.setHeader("Content-Type", "application/json")
+        res.status(200).send(JSON.stringify(result))
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
+
+app.use((req, res) => {
+    res.status(404).send("NOT FOUND NEGRITO!")
+})
+
 
 app.listen(PORT, ()=>console.log("Corriendo en:" + PORT));
 
